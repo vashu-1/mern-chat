@@ -1,21 +1,30 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 import OtherUser from "./OtherUser.jsx";
 import useGetOtherUsers from "../hooks/useGetOtherUsers.jsx";
 import { useSelector } from "react-redux";
 
-const OtherUsers = () => {
-  //my custom hooks
+const OtherUsers = memo(() => {
+  // Custom hook to fetch other users
   useGetOtherUsers();
   const { otherUsers } = useSelector((store) => store.user);
-  if (!otherUsers) return; // early return in react
+  
+  // Memoize the user list to prevent unnecessary re-renders
+  const userList = useMemo(() => {
+    if (!otherUsers) return null;
+    
+    return otherUsers?.map((user) => (
+      <OtherUser key={user._id} user={user} />
+    ));
+  }, [otherUsers]);
+
+  // Early return if no users
+  if (!otherUsers) return null;
 
   return (
     <div className="overflow-auto flex-1">
-      {otherUsers?.map((user) => (
-        <OtherUser key={user._id} user={user} />
-      ))}
+      {userList}
     </div>
   );
-};
+});
 
 export default OtherUsers;

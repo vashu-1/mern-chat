@@ -1,55 +1,66 @@
-import React from "react";
+import React, { useState, useCallback, memo } from "react";
 import { IoSend } from "react-icons/io5";
-import { useState } from "react";
 import axios from "axios";
 import { MESSAGE_END_POINT } from "../../utils/constant";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setMessages } from "../redux/messageSlice.js";
 
-const SendInput = () => {
+const SendInput = memo(() => {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const { selectedUser } = useSelector((store) => store.user);
   const { message: messages } = useSelector((store) => store.message);
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    // alert(message);
-    try {
-      const token = localStorage.getItem("authToken");
-      const headers = {
-        "Content-Type": "application/json",
-      };
+  // Memoize the submit handler to prevent re-creation on each render
+  const onSubmitHandler = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
+      // Early return if no message
+      if (!message.trim()) return;
 
-      const res = await axios.post(
-        `${MESSAGE_END_POINT}/send/${selectedUser?._id}`,
-        { message },
-        {
-          headers,
-          withCredentials: true,
+      try {
+        const token = localStorage.getItem("authToken");
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
         }
-      );
-      // console.log(res);
 
-      const safeMessages = Array.isArray(messages) ? messages : [];
-      dispatch(setMessages([...safeMessages, res.data.newMessage]));
-      setMessage("");
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+        const res = await axios.post(
+          `${MESSAGE_END_POINT}/send/${selectedUser?._id}`,
+          { message },
+          {
+            headers,
+            withCredentials: true,
+          }
+        );
+
+        const safeMessages = Array.isArray(messages) ? messages : [];
+        dispatch(setMessages([...safeMessages, res.data.newMessage]));
+        setMessage("");
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    [message, selectedUser?._id, messages, dispatch]
+  );
+
+  // Memoize the input change handler
+  const handleInputChange = useCallback((e) => {
+    setMessage(e.target.value);
+  }, []);
+
   return (
     <form onSubmit={onSubmitHandler} className="px-4 my-3">
       <div className="w-full relative">
         <input
           type="text"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={handleInputChange}
           placeholder="send a message..."
           className="border text-sm p-3 border-zinc-500 rounded-lg block w-full bg-gray-600 text-white"
         />
@@ -62,6 +73,6 @@ const SendInput = () => {
       </div>
     </form>
   );
-};
+});
 
 export default SendInput;

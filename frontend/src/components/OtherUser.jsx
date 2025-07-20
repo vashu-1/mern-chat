@@ -1,29 +1,47 @@
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedUser } from "../redux/userSlice";
 
-const OtherUser = ({ user }) => {
+const OtherUser = memo(({ user }) => {
   const dispatch = useDispatch();
   const { selectedUser, onlineUsers } = useSelector((store) => store.user);
-  const isOnline =
+  
+  // Memoize online status calculation
+  const isOnline = useMemo(() => 
     Array.isArray(onlineUsers) && user?._id
       ? onlineUsers.includes(user._id)
-      : false;
+      : false,
+    [onlineUsers, user?._id]
+  );
 
-  const selectedUserHandler = (user) => {
-    // console.log(user);
-
+  // Memoize the click handler
+  const selectedUserHandler = useCallback(() => {
     dispatch(setSelectedUser(user));
-  };
+  }, [dispatch, user]);
+
+  // Memoize styling calculations
+  const containerClassName = useMemo(() => 
+    `${selectedUser?._id === user?._id ? "bg-white/15" : ""} flex gap-6  items-center hover:bg-white/15 rounded px-6 py-1 cursor-pointer`,
+    [selectedUser?._id, user?._id]
+  );
+
+  const avatarClassName = useMemo(() => 
+    `avatar ${isOnline ? "online" : "offline"}`,
+    [isOnline]
+  );
+
+  const statusClassName = useMemo(() => 
+    isOnline ? "text-green-500 text-sm" : "text-gray-500 text-sm",
+    [isOnline]
+  );
+
   return (
     <>
       <div
-        onClick={() => selectedUserHandler(user)}
-        className={`${
-          selectedUser?._id === user?._id ? "bg-white/15" : ""
-        } flex gap-6  items-center hover:bg-white/15 rounded px-6 py-1 cursor-pointer`}
+        onClick={selectedUserHandler}
+        className={containerClassName}
       >
-        <div className={`avatar ${isOnline ? "online" : "offline"}`}>
+        <div className={avatarClassName}>
           <div className="w-12 rounded-full">
             <img src={user?.profilePhoto} alt="" />
           </div>
@@ -32,11 +50,7 @@ const OtherUser = ({ user }) => {
           <div className="flex items-center justify-center">
             <p>{user?.fullName}</p>
           </div>
-          <div
-            className={
-              isOnline ? "text-green-500 text-sm" : "text-gray-500 text-sm"
-            }
-          >
+          <div className={statusClassName}>
             {isOnline ? "Online" : "Offline"}
           </div>
         </div>
@@ -44,6 +58,6 @@ const OtherUser = ({ user }) => {
       <div className="divider my-0 py-0 h-1"></div>
     </>
   );
-};
+});
 
 export default OtherUser;

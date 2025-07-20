@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { BiSearchAlt2 } from "react-icons/bi";
 import OtherUsers from "./OtherUsers.jsx";
 import toast from "react-hot-toast";
 import { USER_END_POINT } from "../../utils/constant";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setAuthUser, setOtherUsers } from "../redux/userSlice.js";
 
@@ -23,23 +22,22 @@ const Sidebar = () => {
     }
   }, [otherUsers, allUsers.length]);
 
-  // Filter users based on search input
-  useEffect(() => {
+  // Optimized filtered users with useMemo to prevent unnecessary recalculations
+  const filteredUsers = useMemo(() => {
     if (search.trim() === "") {
-      // If search is empty, show all users
-      if (allUsers.length > 0) {
-        dispatch(setOtherUsers(allUsers));
-      }
-    } else {
-      // Filter users based on search
-      const filteredUsers = allUsers.filter((user) =>
-        user.fullName.toLowerCase().includes(search.toLowerCase())
-      );
-      dispatch(setOtherUsers(filteredUsers));
+      return allUsers;
     }
-  }, [search, allUsers, dispatch]);
+    return allUsers.filter((user) =>
+      user.fullName.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search, allUsers]);
 
-  const logoutHandler = async () => {
+  // Update otherUsers only when filteredUsers actually changes
+  useEffect(() => {
+    dispatch(setOtherUsers(filteredUsers));
+  }, [filteredUsers, dispatch]);
+
+  const logoutHandler = useCallback(async () => {
     try {
       const token = localStorage.getItem("authToken");
       const headers = {
@@ -60,23 +58,25 @@ const Sidebar = () => {
       );
       if (res.data.success) {
         toast.success(res.data.message);
-        // Clear token from localStorage
+        // Clear token and user data from localStorage
         localStorage.removeItem("authToken");
+        localStorage.removeItem("authUser");
         navigate("/login");
       }
       dispatch(setAuthUser(null));
     } catch (error) {
       console.log(error.message);
       toast.error(error.response?.data?.message || "Logout failed");
-      // Clear token even if logout request fails
+      // Clear token and user data even if logout request fails
       localStorage.removeItem("authToken");
+      localStorage.removeItem("authUser");
     }
-  };
+  }, [navigate, dispatch]);
 
-  const searchSubmitHandler = async (e) => {
+  const searchSubmitHandler = useCallback((e) => {
     e.preventDefault();
-    // No need for manual search logic since useEffect handles it automatically
-  };
+    // No need for manual search logic since useMemo handles it automatically
+  }, []);
 
   return (
     <div className="flex w-2/5 flex-col h-full">
