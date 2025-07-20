@@ -1,5 +1,5 @@
 import React from "react";
-import SendInput from "./sendInput";
+import SendInput from "./SendInput";
 import Messages from "./Messages";
 import { useSelector } from "react-redux";
 
