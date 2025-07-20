@@ -12,9 +12,16 @@ dotenv.config({});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+const allowedOrigins = [
+  "http://localhost:5173", // Development
+  "https://mern-chat-frontend-4r6p.onrender.com", // Production
+  process.env.FRONTEND_URL, // Environment variable for flexibility
+].filter(Boolean); // Remove undefined values
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin: allowedOrigins,
     credentials: true,
   })
 );

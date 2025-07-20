@@ -8,6 +8,7 @@ import io from "socket.io-client";
 import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/userSlice";
 import { useDispatch } from "react-redux";
+import { SOCKET_URL } from "../utils/constant";
 // import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -35,7 +36,7 @@ const App = () => {
 
   useEffect(() => {
     if (authUser) {
-      const socketio = io("http://localhost:8080", {
+      const socketio = io(SOCKET_URL, {
         query: {
           userId: authUser._id,
         },

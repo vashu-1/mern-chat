@@ -4,10 +4,16 @@ import express from "express";
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173", // Development
+  "https://mern-chat-frontend-4r6p.onrender.com", // Production
+  process.env.FRONTEND_URL, // Environment variable for flexibility
+].filter(Boolean); // Remove undefined values
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
