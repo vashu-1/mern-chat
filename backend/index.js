@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin: "https://mern-chat-frontend-4r6p.onrender.com/", // Frontend URL
     credentials: true,
   })
 );
