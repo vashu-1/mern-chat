@@ -7,19 +7,14 @@ import { setMessages } from "../redux/messageSlice.js";
 
 const useGetMessages = () => {
   const { selectedUser } = useSelector((store) => store.user);
-  const { message } = useSelector((store) => store.message);
   const dispatch = useDispatch();
   const lastSelectedUserId = useRef(null);
 
   const fetchMessages = useCallback(async () => {
     if (!selectedUser?._id) return;
 
-    // Avoid fetching if same user is selected and messages already exist
-    if (
-      lastSelectedUserId.current === selectedUser._id &&
-      message &&
-      message.length > 0
-    ) {
+    // Avoid fetching if same user is selected and we already fetched for this user
+    if (lastSelectedUserId.current === selectedUser._id) {
       console.log("Messages already loaded for this user, skipping fetch");
       return;
     }
@@ -49,7 +44,7 @@ const useGetMessages = () => {
     } catch (error) {
       console.log("Error fetching messages:", error.message);
     }
-  }, [selectedUser, message, dispatch]);
+  }, [selectedUser, dispatch]);
 
   useEffect(() => {
     // Clear messages when user changes to avoid showing old messages

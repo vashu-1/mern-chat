@@ -10,6 +10,13 @@ const Messages = memo(() => {
 
   const { message } = useSelector((store) => store.message);
 
+  // Debug: Log the messages to console
+  console.log("Messages component - message state:", message);
+  console.log(
+    "Messages component - message length:",
+    Array.isArray(message) ? message.length : "Not array"
+  );
+
   // Memoize message list to prevent unnecessary re-renders
   const messageList = useMemo(() => {
     if (!Array.isArray(message) || message.length === 0) return null;
@@ -17,9 +24,19 @@ const Messages = memo(() => {
   }, [message]);
 
   // Early return if no messages
-  if (!Array.isArray(message) || message.length === 0) return null;
+  if (!Array.isArray(message) || message.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+        No messages yet. Start the conversation!
+      </div>
+    );
+  }
 
-  return <div className="px-4 flex-1 overflow-auto">{messageList}</div>;
+  return (
+    <div className="px-2 md:px-4 py-2 space-y-2 h-full overflow-y-auto messages-list-scroll">
+      {messageList}
+    </div>
+  );
 });
 
 export default Messages;

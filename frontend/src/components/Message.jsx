@@ -26,14 +26,17 @@ const Message = memo(({ msg }) => {
   );
 
   const bubbleClass = useMemo(
-    () => `chat-bubble ${isOwnMessage ? "bg-gray-200 text-black" : ""}`,
+    () =>
+      `chat-bubble text-sm md:text-base max-w-xs md:max-w-md ${
+        isOwnMessage ? "bg-gray-200 text-black" : ""
+      }`,
     [isOwnMessage]
   );
 
   return (
-    <div ref={scroll} className={chatClass}>
+    <div ref={scroll} className={`${chatClass} mb-2 md:mb-4`}>
       <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
+        <div className="w-8 md:w-10 rounded-full">
           <img alt="Tailwind CSS chat bubble component" src={profilePhoto} />
         </div>
       </div>

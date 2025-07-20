@@ -55,20 +55,23 @@ const SendInput = memo(() => {
   }, []);
 
   return (
-    <form onSubmit={onSubmitHandler} className="px-4 my-3">
+    <form
+      onSubmit={onSubmitHandler}
+      className="px-2 md:px-4 py-2 bg-inherit border-t border-gray-600"
+    >
       <div className="w-full relative">
         <input
           type="text"
           value={message}
           onChange={handleInputChange}
           placeholder="send a message..."
-          className="border text-sm p-3 border-zinc-500 rounded-lg block w-full bg-gray-600 text-white"
+          className="border text-xs md:text-sm p-2 md:p-3 pr-10 md:pr-12 border-zinc-500 rounded-lg block w-full bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         <button
           type="submit"
-          className="absolute inset-y-0 end-0 items-center flex pr-4"
+          className="absolute inset-y-0 end-0 items-center flex pr-2 md:pr-4 text-gray-300 hover:text-white transition-colors duration-200"
         >
-          <IoSend />
+          <IoSend className="w-4 h-4 md:w-5 md:h-5" />
         </button>
       </div>
     </form>
