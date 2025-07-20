@@ -13,12 +13,6 @@ const useGetMessages = () => {
   const fetchMessages = useCallback(async () => {
     if (!selectedUser?._id) return;
 
-    // Avoid fetching if same user is selected and we already fetched for this user
-    if (lastSelectedUserId.current === selectedUser._id) {
-      console.log("Messages already loaded for this user, skipping fetch");
-      return;
-    }
-
     try {
       const token = localStorage.getItem("authToken");
 

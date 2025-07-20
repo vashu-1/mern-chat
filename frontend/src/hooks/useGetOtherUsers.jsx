@@ -8,6 +8,7 @@ const useGetOtherUsers = () => {
   const dispatch = useDispatch();
   const { authUser, otherUsers } = useSelector((store) => store.user);
   const hasFetchedRef = useRef(false);
+  const lastFetchTimeRef = useRef(0);
   const otherUsersRef = useRef(otherUsers);
 
   // Update ref when otherUsers changes
@@ -27,16 +28,22 @@ const useGetOtherUsers = () => {
         return;
       }
 
-      // Don't fetch if we already have users or have already fetched (avoid redundant calls)
-      if (
-        (otherUsersRef.current && otherUsersRef.current.length > 0) ||
-        hasFetchedRef.current
-      ) {
-        console.log("Other users already loaded, skipping fetch");
+      // Allow refetching every 30 seconds or if no users exist
+      const now = Date.now();
+      const timeSinceLastFetch = now - lastFetchTimeRef.current;
+      const shouldRefetch =
+        !hasFetchedRef.current ||
+        !otherUsersRef.current ||
+        otherUsersRef.current.length === 0 ||
+        timeSinceLastFetch > 30000; // 30 seconds
+
+      if (!shouldRefetch) {
+        console.log("Recent fetch detected, skipping refetch");
         return;
       }
 
       hasFetchedRef.current = true;
+      lastFetchTimeRef.current = now;
 
       const headers = {
         "Content-Type": "application/json",
