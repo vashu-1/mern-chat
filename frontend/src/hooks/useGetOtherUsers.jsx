@@ -11,13 +11,19 @@ const useGetOtherUsers = () => {
     const fetchOtherUsers = async () => {
       try {
         const token = localStorage.getItem("authToken");
+
+        // Don't make request if no token available
+        if (!token) {
+          console.log("No auth token available, skipping fetchOtherUsers");
+          return;
+        }
+
         const headers = {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         };
 
-        if (token) {
-          headers.Authorization = `Bearer ${token}`;
-        }
+        console.log("Fetching other users with token");
 
         const res = await axios.get(`${USER_END_POINT}/`, {
           headers,
@@ -26,7 +32,10 @@ const useGetOtherUsers = () => {
         // console.log(res.data);
         dispatch(setOtherUsers(res.data));
       } catch (error) {
-        console.log(error.response?.data?.message || error.message);
+        console.log(
+          "Error fetching other users:",
+          error.response?.data?.message || error.message
+        );
       }
     };
     fetchOtherUsers();
