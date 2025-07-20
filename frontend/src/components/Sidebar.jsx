@@ -41,7 +41,13 @@ const Sidebar = () => {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.post(`${USER_END_POINT}/logout`, {});
+      const res = await axios.post(
+        `${USER_END_POINT}/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/login");

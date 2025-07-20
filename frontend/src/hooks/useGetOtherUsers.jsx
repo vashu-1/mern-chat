@@ -10,8 +10,9 @@ const useGetOtherUsers = () => {
   useEffect(() => {
     const fetchOtherUsers = async () => {
       try {
-        axios.defaults.withCredentials = true;
-        const res = await axios.get(`${USER_END_POINT}/`);
+        const res = await axios.get(`${USER_END_POINT}/`, {
+          withCredentials: true,
+        });
         // console.log(res.data);
         dispatch(setOtherUsers(res.data));
       } catch (error) {
@@ -19,7 +20,7 @@ const useGetOtherUsers = () => {
       }
     };
     fetchOtherUsers();
-  }, []);
+  }, [dispatch]);
 };
 
 export default useGetOtherUsers;
