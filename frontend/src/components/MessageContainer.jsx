@@ -67,16 +67,18 @@ const MessageContainer = memo(() => {
     <>
       {selectedUser !== null ? (
         <div className="w-full md:w-3/5 flex flex-col h-full bg-transparent">
-          {/* Fixed Header - Always visible */}
-          <div className="flex-shrink-0 bg-inherit">{userHeader}</div>
+          {/* Fixed Header - Always visible and sticky */}
+          <div className="flex-shrink-0 sticky top-0 z-20 bg-inherit backdrop-blur-sm">
+            {userHeader}
+          </div>
 
           {/* Scrollable Messages Area */}
-          <div className="flex-1 overflow-hidden min-h-0 messages-scroll-container">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 messages-scroll-container">
             <Messages />
           </div>
 
           {/* Fixed Send Input - Always visible at bottom */}
-          <div className="flex-shrink-0 bg-inherit">
+          <div className="flex-shrink-0 sticky bottom-0 z-20 bg-inherit backdrop-blur-sm">
             <SendInput />
           </div>
         </div>

@@ -33,8 +33,8 @@ const Messages = memo(() => {
   }
 
   return (
-    <div className="px-2 md:px-4 py-2 space-y-2 h-full overflow-y-auto messages-list-scroll">
-      {messageList}
+    <div className="h-full w-full overflow-y-auto overflow-x-hidden messages-list-scroll">
+      <div className="px-2 md:px-4 py-2 space-y-2">{messageList}</div>
     </div>
   );
 });
