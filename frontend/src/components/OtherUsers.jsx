@@ -10,15 +10,15 @@ const OtherUsers = memo(() => {
   
   // Memoize the user list to prevent unnecessary re-renders
   const userList = useMemo(() => {
-    if (!otherUsers) return null;
+    if (!Array.isArray(otherUsers) || otherUsers.length === 0) return null;
     
-    return otherUsers?.map((user) => (
+    return otherUsers.map((user) => (
       <OtherUser key={user._id} user={user} />
     ));
   }, [otherUsers]);
 
   // Early return if no users
-  if (!otherUsers) return null;
+  if (!Array.isArray(otherUsers) || otherUsers.length === 0) return null;
 
   return (
     <div className="overflow-auto flex-1">

@@ -7,15 +7,14 @@ const ProtectedRoute = ({ children }) => {
 
   // console.log("ProtectedRoute - authUser:", authUser); // Debug log
 
-  // If user is not authenticated, redirect to login
-  if (!authUser || authUser === null || authUser === undefined) {
+  if (!authUser) {
     // console.log("Redirecting to login page"); // Debug log
     return <Navigate to="/" replace />;
   }
 
   // console.log("User authenticated, rendering children"); // Debug log
   // If user is authenticated, render the protected component
-  return children;
+  return children || null;
 };
 
 export default ProtectedRoute;

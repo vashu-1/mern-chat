@@ -12,12 +12,12 @@ const Messages = memo(() => {
 
   // Memoize message list to prevent unnecessary re-renders
   const messageList = useMemo(() => {
-    if (!message) return null;
-    return message?.map((msg) => <Message key={msg._id} msg={msg} />);
+    if (!Array.isArray(message) || message.length === 0) return null;
+    return message.map((msg) => <Message key={msg._id} msg={msg} />);
   }, [message]);
 
   // Early return if no messages
-  if (!message) return null;
+  if (!Array.isArray(message) || message.length === 0) return null;
 
   return <div className="px-4 flex-1 overflow-auto">{messageList}</div>;
 });

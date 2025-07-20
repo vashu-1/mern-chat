@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import HomePage from "./components/HomePage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import { setSocket } from "./redux/socketSlice";
@@ -22,7 +23,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/home",
-    element: <HomePage />,
+    element: (
+      <ProtectedRoute>
+        <HomePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "*",
