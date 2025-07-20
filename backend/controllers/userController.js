@@ -102,6 +102,7 @@ export const login = async (req, res) => {
         success: true,
         message: "Login successful",
         user: userData,
+        token: token, // Send token in response for frontend storage
       });
   } catch (error) {
     console.log(error.message);

@@ -17,11 +17,20 @@ const SendInput = () => {
     e.preventDefault();
     // alert(message);
     try {
+      const token = localStorage.getItem("authToken");
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const res = await axios.post(
         `${MESSAGE_END_POINT}/send/${selectedUser?._id}`,
         { message },
         {
-          headers: { "Content-Type": "application/json" },
+          headers,
           withCredentials: true,
         }
       );

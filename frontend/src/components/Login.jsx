@@ -33,6 +33,11 @@ const Login = () => {
       if (res.data.success) {
         toast.success("Login successful");
 
+        // Store token in localStorage for Authorization header
+        if (res.data.token) {
+          localStorage.setItem("authToken", res.data.token);
+        }
+
         dispatch(setAuthUser(res.data.user));
         navigate("/home");
       }

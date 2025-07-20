@@ -12,9 +12,19 @@ const useGetMessages = () => {
     if (!selectedUser?._id) return;
     const fetchMessages = async () => {
       try {
+        const token = localStorage.getItem("authToken");
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
         const res = await axios.get(
           `${MESSAGE_END_POINT}/${selectedUser._id}`,
           {
+            headers,
             withCredentials: true,
           }
         );
@@ -25,7 +35,7 @@ const useGetMessages = () => {
       }
     };
     fetchMessages();
-  }, [selectedUser]);
+  }, [selectedUser, dispatch]);
 };
 
 export default useGetMessages;

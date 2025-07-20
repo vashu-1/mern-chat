@@ -34,6 +34,15 @@ const App = () => {
   const { authUser } = useSelector((store) => store.user);
   const dispatch = useDispatch();
 
+  // Check for stored token on app startup
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token && !authUser) {
+      // Token exists but no user in Redux - could validate token here if needed
+      console.log("Token found in localStorage");
+    }
+  }, [authUser]);
+
   useEffect(() => {
     if (authUser) {
       const socketio = io(SOCKET_URL, {

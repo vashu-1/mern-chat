@@ -41,21 +41,35 @@ const Sidebar = () => {
 
   const logoutHandler = async () => {
     try {
+      const token = localStorage.getItem("authToken");
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const res = await axios.post(
         `${USER_END_POINT}/logout`,
         {},
         {
+          headers,
           withCredentials: true,
         }
       );
       if (res.data.success) {
         toast.success(res.data.message);
+        // Clear token from localStorage
+        localStorage.removeItem("authToken");
         navigate("/login");
       }
       dispatch(setAuthUser(null));
     } catch (error) {
       console.log(error.message);
       toast.error(error.response?.data?.message || "Logout failed");
+      // Clear token even if logout request fails
+      localStorage.removeItem("authToken");
     }
   };
 

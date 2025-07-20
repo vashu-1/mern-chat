@@ -10,7 +10,17 @@ const useGetOtherUsers = () => {
   useEffect(() => {
     const fetchOtherUsers = async () => {
       try {
+        const token = localStorage.getItem("authToken");
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
         const res = await axios.get(`${USER_END_POINT}/`, {
+          headers,
           withCredentials: true,
         });
         // console.log(res.data);
